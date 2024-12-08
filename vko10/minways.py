@@ -1,13 +1,32 @@
 def count(x, coins):
-    C1 = {c:1 for c in coins}
-    C2  = {c:1 for c in coins}
-    for s in range(1,x+1):
-        if s in coins: continue
-        mincoin_prev = min([C1[s-c] for c in coins if s-c>0])
-        C2[s] = sum([C2[s-c] for c in coins if s-c>0 and C1[s-c]==mincoin_prev])
-        C1[s] = mincoin_prev + 1
-    return C2[x]
+    min_coins = [-1] * (x + 1)
+    dp = [0] * (x + 1)
+    
+    for coin in coins:
+        if coin <= x:
+            min_coins[coin] = 1
+            dp[coin] = 1
+    
+    for amount in range(1, x + 1):
+        # skip if a coin denomination
+        if amount in coins:
+            continue
+
+        min_coins_prev = -1
         
+        for coin in coins:
+            if amount - coin > 0 and min_coins[amount - coin] != -1:
+                if min_coins_prev == -1 or min_coins[amount - coin] < min_coins_prev:
+                    min_coins_prev = min_coins[amount - coin]
+        
+        if min_coins_prev != -1:
+            for coin in coins:
+                if amount - coin > 0 and min_coins[amount - coin] == min_coins_prev:
+                    dp[amount] += dp[amount - coin]
+            
+            min_coins[amount] = min_coins_prev + 1
+    
+    return dp[x]
 
 if __name__ == "__main__":
     print(count(5, [1])) # 1
