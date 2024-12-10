@@ -1,7 +1,43 @@
-# I really want to solve this one but I'll have to come back to it later
+"""
+CSES-3137 Kurssi
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko10
+
+Anna Sokolova • December 2024
+"""
+
+
+import math
+
+
 def count(x):
-    # TODO
-    pass
+    # cool problem! really enjoyed it, took me some time to figure out.
+    # could be further optimized to use dp for memoization
+    # instead of recursion, but the principal remains the same.
+
+    if x < 40 or x > 64:
+        return 0
+
+    weeks = 8
+    min_t = 5
+    max_t = 8
+
+    def solve(tasks, w):
+        if w > weeks:
+            return 0
+        if tasks < 0:
+            return 0
+        if (tasks == 0 and w == weeks):
+            return 1
+
+        count = 0
+        for t in range(min_t, max_t + 1):
+            count += math.comb(max_t, t) * solve(tasks - t, w + 1)
+
+        return count
+
+    return solve(x, 0) * math.factorial(x)
 
 if __name__ == "__main__":
     print(count(40)) # 78913132667888442497725132524762783866832203758436352000000000
