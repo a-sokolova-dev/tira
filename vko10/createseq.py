@@ -1,33 +1,38 @@
-# simplified cycles
+"""
+CSES-3126 Alijonon muodostus
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko10
+
+Anna Sokolova • December 2024
+"""
+
+
 def find(t):
-    if not t: return []
-
     n = len(t)
-    lenghts = [1] * n
-    prev = list(range(n))
+    if (n == 1):
+        return t
+    prev = {}
 
-    for i in range(1, n):
+    for i in range(n):
+        prev[i] = [t[i]]
         for j in range(i):
-            if (t[i] > t[j] and 
-                lenghts[i] < lenghts[j] + 1):
-                lenghts[i] = lenghts[j] + 1
-                prev[i] = j
-    
-    max_idx = lenghts.index(max(lenghts))
-    
+            if t[i] > t[j]:
+                curr = prev[j] + [t[i]]
+                if len(curr) > len(prev[i]):
+                    prev[i] = curr
+
     result = []
-    curr_idx = max_idx
-    
-    while True:
-        result.append(t[curr_idx])
-        if curr_idx == prev[curr_idx]:
-            break
-        curr_idx = prev[curr_idx]
-    
-    return result[::-1]
- 
+    for i in range(1, n):
+        if len(prev[i]) > len(result):
+            result = prev[i]
+
+    return result
+
+
 if __name__ == "__main__":
-    print(find([1, 1, 2, 2, 3, 3])) # [1, 2, 3]
-    print(find([1, 1, 1, 1])) # [1]
-    print(find([5, 4, 3, 2, 1])) # [3]
-    print(find([4, 1, 5, 6, 3, 4, 1, 8])) # [1, 3, 4, 8]
+    print(find([1, 1, 2, 2, 3, 3]))  # [1, 2, 3]
+    print(find([1, 1, 1, 1]))  # [1]
+    print(find([5, 4, 3, 2, 1]))  # [3]
+    print(find([4, 1, 5, 6, 3, 4, 1, 8]))  # [1, 3, 4, 8]
+    print(find([10]))  # [1, 3, 4, 8]
