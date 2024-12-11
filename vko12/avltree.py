@@ -1,101 +1,84 @@
+"""
+CSES-3173 AVL-puu
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko12
+
+Anna Sokolova • December 2024
+"""
+
+
 class Node:
-    def __init__(self, value, parent=None):
-        self.value = value
+    # used theory and specifically the balance factor idea from here:
+    # https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/a2c80596cf4a2b5fbc854afdd2f23dcb_MIT6_006S20_lec7.pdf
+
+    def __init__(self, val):
+        self.value = val
         self.left = None
         self.right = None
-        self.height = 0
+        self.balance = 0
+
 
 class TreeSet:
     def __init__(self):
         self.root = None
 
-    def add(self, value):
+    def add(self, x):
         if not self.root:
-            self.root = Node(value)
+            self.root = Node(x)
             return
 
         node = self.root
-        path = []
+
         while True:
-            path.append(node)
-            if node.value == value:
+            if node.value == x:
                 return
-            if node.value > value:
-                if not node.left:
-                    node.left = Node(value)
-                    path.append(node.left)
-                    self.check(path)
-                    return
-                else:
-                    node = node.left
-            else:
+            if node.value < x:
+                node.balance += 1
                 if not node.right:
-                    node.right = Node(value)
-                    path.append(node.right)
-                    self.check(path)
+                    node.right = Node(x)
                     return
-                else:
-                    node = node.right
+                if node.balance > 1:
+                    if node.left:
+                        left = node.left
+                    else:
+                        left = None
+                    node.left = Node(node.value)
+                    node.left.left = left
+                    node.value = node.right.value
+                    node.left.right = node.right.left
+                    node.right = node.right.right
+                    continue
 
-    def height(self, node):
-        return node.height if node else -1
- 
-    def fix_parent(self, parent, old_node, new_node):
-        if not parent:
-            self.root = new_node
-            return
-        if parent.left == old_node:
-            parent.left = new_node
-        else:
-            parent.right = new_node
+                node = node.right
 
-    def update_height(self, node):
-        node.height = max(self.height(node.left), self.height(node.right)) + 1
+            if node.value > x:
+                node.balance -= 1
+                if not node.left:
+                    node.left = Node(x)
+                    return
+                if node.balance < -1:
+                    if node.right:
+                        right = node.right
+                    else:
+                        right = None
+                    node.right = Node(node.value)
+                    node.right.right = right
+                    node.value = node.left.value
+                    node.right.left = node.left.right
+                    node.left = node.left.left
+                    continue
 
-    def check(self, path):
-        for i in range(len(path) - 1, -1, -1):
-            x = path[i]
-            self.update_height(x)
-            if abs(self.height(x.left) - self.height(x.right)) > 1:
-                p = path[i - 1] if i > 0 else None
-                y = path[i + 1]
-                z = path[i + 2]
-                if x.left == y and y.left == z:
-                    self.rotate_right(p, x, y)
-                elif x.right == y and y.right == z:
-                    self.rotate_left(p, x, y)
-                elif x.left == y and y.right == z:
-                    self.rotate_left(x, y, z)
-                    self.rotate_right(p, x, z)
-                elif x.right == y and y.left == z:
-                    self.rotate_right(x, y, z)
-                    self.rotate_left(p, x, z)
-                    
-    def rotate_left(self, parent, x, y):
-        x.right = y.left
-        y.left = x
-        self.fix_parent(parent, x, y)
-        self.update_height(x)
-        self.update_height(y)
-            
-    def rotate_right(self, parent, x, y):
-        x.left = y.right
-        y.right = x
-        self.fix_parent(parent, x, y)
-        self.update_height(x)
-        self.update_height(y)
+                node = node.left
 
-    def __contains__(self, value):
-        if not self.root:
-            return False
-
+    def __contains__(self, x):
         node = self.root
         while node:
-            if node.value == value:
+            if node.value == x:
                 return True
-            if node.value > value:
+            elif node.value > x:
                 node = node.left
-            else:
+            elif node.value < x:
                 node = node.right
 
         return False
@@ -111,3 +94,14 @@ class TreeSet:
         self.traverse(node.left, items)
         items.append(node.value)
         self.traverse(node.right, items)
+
+
+if __name__ == "__main__":
+    s = TreeSet()
+    s.add(1)
+    s.add(2)
+    s.add(4)
+    print(1 in s)  # True
+    print(2 in s)  # True
+    print(3 in s)  # False
+    print(4 in s)  # True

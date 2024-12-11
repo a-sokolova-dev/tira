@@ -1,4 +1,11 @@
-""" From the matskut """
+"""
+CSES-3172 Monta alkiota
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko12
+
+Anna Sokolova • December 2024
+"""
 
 class Node:
     def __init__(self, value):
@@ -7,6 +14,7 @@ class Node:
         self.right = None
 
 class TreeSet:
+    # from the course material
     def __init__(self):
         self.root = None
 

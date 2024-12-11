@@ -1,4 +1,12 @@
-import collections 
+"""
+CSES-3165 Puun korkeus
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko12
+
+Anna Sokolova • December 2024
+"""
+
 
 class Node:
     def __init__(self, value):
@@ -6,71 +14,65 @@ class Node:
         self.left = None
         self.right = None
 
+
 class TreeSet:
+     # from the course material
     def __init__(self):
         self.root = None
 
     def add(self, value):
         if not self.root:
             self.root = Node(value)
-        else:
-            self._add_recursive(self.root, value)
-
-    def _add_recursive(self, node, value):
-        if node.value == value:
             return
-        elif value < node.value:
-            if not node.left:
-                node.left = Node(value)
+
+        node = self.root
+        while True:
+            if node.value == value:
+                return
+            if node.value > value:
+                if not node.left:
+                    node.left = Node(value)
+                    return
+                node = node.left
             else:
-                self._add_recursive(node.left, value)
-        else:
-            if not node.right:
-                node.right = Node(value)
-            else:
-                self._add_recursive(node.right, value)
+                if not node.right:
+                    node.right = Node(value)
+                    return
+                node = node.right
 
     def __contains__(self, value):
-        return self._contains_recursive(self.root, value)
-
-    def _contains_recursive(self, node, value):
-        if node is None:
+        if not self.root:
             return False
-        if node.value == value:
-            return True
-        elif value < node.value:
-            return self._contains_recursive(node.left, value)
-        else:
-            return self._contains_recursive(node.right, value)
+
+        node = self.root
+        while node:
+            if node.value == value:
+                return True
+            if node.value > value:
+                node = node.left
+            else:
+                node = node.right
+
+        return False
 
     def __repr__(self):
         items = []
         self._in_order_traversal(self.root, items)
         return str(items)
 
-    def _in_order_traversal(self, node, items):
-        if node:
-            self._in_order_traversal(node.left, items)
-            items.append(node.value)
-            self._in_order_traversal(node.right, items)
-
     def height(self):
-        if not self.root:
-            return -1
-        
-        queue = collections.deque([(self.root, 0)])
-        max_height = -1
-        
-        while queue:
-            node, level = queue.popleft()
-            max_height = max(max_height, level)
-            
-            if node.left:
-                queue.append((node.left, level + 1))
-            if node.right:
-                queue.append((node.right, level + 1))
-        
-        return max_height
+        # can be also solved using a queue
+        # to avoid recursion entirely
+        def traverse(root):
+            if root is None:
+                return -1
+
+            left_height = traverse(root.left)
+            right_height = traverse(root.right)
+            return max(left_height, right_height) + 1
+
+        return traverse(self.root)
+
 
 if __name__ == "__main__":
     s = TreeSet()

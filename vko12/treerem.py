@@ -1,8 +1,19 @@
+"""
+CSES-3171 Alkion poisto
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko12
+
+Anna Sokolova • December 2024
+"""
+
+
 class Node:
     def __init__(self, value):
         self.value = value
         self.left = None
         self.right = None
+
 
 class TreeSet:
     def __init__(self):
@@ -54,21 +65,6 @@ class TreeSet:
         self.traverse(node.left, items)
         items.append(node.value)
         self.traverse(node.right, items)
-        
-    def parent(self, node, child):
-        if not node:
-            return
-        if node.left:
-            if node.left.value == child.value:
-                return node
-        if node.right:
-            if node.right.value == child.value:
-                return node
-
-        left = self.parent(node.left, child)
-        right = self.parent(node.right, child)
-
-        return left if left else right
 
     def remove(self, value):
         def remove_node(node, value):
