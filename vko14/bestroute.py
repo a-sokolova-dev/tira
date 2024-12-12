@@ -1,37 +1,54 @@
+"""
+CSES-3178 Paras reitti
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko14
+
+Anna Sokolova • December 2024
+"""
+
+
 import heapq
 
-class BestRoute:
-    def __init__(self, n):
-        self.cities = {}
-        for i in range(n):
-            self.cities[i+1] = []
 
-    def add_road(self, a, b, x):
-        self.cities[a].append((b, x))
-        self.cities[b].append((a, x))
+class BellmanFord:
+    def __init__(self, nodes):
+        self.nodes = nodes
+        self.edges = []
+
+    def add_edge(self, node_a, node_b, weight):
+        self.edges.append((node_a, node_b, weight))
+
+    def find_distances(self, start_node):
+        distances = {}
+        for node in self.nodes:
+            distances[node] = float("inf")
+        distances[start_node] = 0
+
+        num_rounds = len(self.nodes) - 1
+        for _ in range(num_rounds):
+            for edge in self.edges:
+                node_a, node_b, weight = edge
+                new_distance = distances[node_a] + weight
+                if new_distance < distances[node_b]:
+                    distances[node_b] = new_distance
+
+        return distances
+
+
+class BestRoute:
+    # refactored to use BellFord instead of a more literal approach
+    def __init__(self, n):
+        self.cities = BellmanFord(range(1, n + 1))
+
+    def add_road(self, a, b, length):
+        # adding "twice" since roads are (usually) bidirectional
+        self.cities.add_edge(a, b, length)
+        self.cities.add_edge(b, a, length)
 
     def find_route(self, start, end):
-        distances = {}
-        for city in self.cities:
-            distances[city] = float("inf")
+        distances = self.cities.find_distances(start)
         distances[start] = 0
-
-        queue = []
-        heapq.heappush(queue, (0, start))
-
-        visited = set()
-        while queue:
-            a = heapq.heappop(queue)[1]
-            if a in visited:
-                continue
-            visited.add(a)
-
-            for b, weight in self.cities[a]:
-                new_distance = distances[a] + weight
-                if new_distance < distances[b]:
-                    distances[b] = new_distance
-                    new_pair = (new_distance, b)
-                    heapq.heappush(queue, new_pair)
 
         return distances[end] if distances[end] != float("inf") else -1
 
@@ -39,8 +56,8 @@ class BestRoute:
 if __name__ == "__main__":
     b = BestRoute(3)
     b.add_road(1, 2, 2)
-    print(b.find_route(1, 3)) # -1
+    print(b.find_route(1, 3))  # -1
     b.add_road(1, 3, 5)
-    print(b.find_route(1, 3)) # 5
+    print(b.find_route(1, 3))  # 5
     b.add_road(2, 3, 1)
-    print(b.find_route(1, 3)) # 3
+    print(b.find_route(1, 3))  # 3

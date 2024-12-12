@@ -1,4 +1,15 @@
+"""
+CSES-3183 Polku ruudukossa
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko14
+
+Anna Sokolova • December 2024
+"""
+
+
 import heapq
+
 
 class Dijkstra:
     def __init__(self, nodes):
@@ -32,25 +43,29 @@ class Dijkstra:
 
 
 def count(r):
+    # formatted and prettified a bit 
+    # could be solved using the Bellman-Ford's
     rows = len(r)
-    cols = len(r[0])
+    columns = len(r[0])
 
-    dijkstra = Dijkstra(range(rows * cols))
+    d = Dijkstra(range(rows * columns))
 
     for i in range(rows):
-        for j in range(cols):
-            node_a = i * cols + j
+        for j in range(columns):
+            node_a = i * columns + j
             for ni, nj in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
-                if 0 <= ni < rows and 0 <= nj < cols:
-                    node_b = ni * cols + nj
-                    dijkstra.add_edge(node_a, node_b, r[ni][nj])
+                if 0 <= ni < rows and 0 <= nj < columns:
+                    node_b = ni * columns + nj
+                    d.add_edge(node_a, node_b, r[ni][nj])
 
-    end_node = (rows - 1) * cols + (cols - 1)
-    return dijkstra.find_distance(0, end_node) + r[0][0]
+    start_node = 0
+    end_node = (rows - 1) * columns + (columns - 1)
+    # account for the sum on the start square
+    return d.find_distance(start_node, end_node) + r[0][0]
 
 
 if __name__ == "__main__":
     r = [[2, 1, 4, 8],
          [3, 8, 7, 2],
          [9, 5, 1, 2]]
-    print(count(r))  # Output: 17
+    print(count(r))  # 17

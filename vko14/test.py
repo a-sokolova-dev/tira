@@ -1,14 +1,6 @@
-"""
-CSES-3179 Listahyppy
-
-Please see my GitHub repository for used theory references and writeups:
-https://github.com/a-sokolova-dev/tira/tree/main/vko14
-
-Anna Sokolova • December 2024
-"""
-
+import random
+import time
 import heapq
-
 
 class Dijkstra:
     def __init__(self, nodes):
@@ -18,6 +10,11 @@ class Dijkstra:
     def add_edge(self, node_a, node_b, weight):
         self.graph[node_a].append((node_b, weight))
 
+    # added shuffling edges for testing 
+    def shuffle_edges(self):
+        for node in self.graph:
+            random.shuffle(self.graph[node])
+            
     def find_distances(self, start_node):
         distances = {}
         for node in self.nodes:
@@ -42,28 +39,26 @@ class Dijkstra:
                     heapq.heappush(queue, new_pair)
 
         return distances
-
-
-def calculate(t):
-    # refactored to use Dijkstra's
-    n = len(t)
-    d = Dijkstra(range(n))
-
-    for i in range(n):
-        if i - t[i] >= 0:
-            d.add_edge(i, i - t[i], t[i])
-        if i + t[i] < n:
-            d.add_edge(i, i + t[i], t[i])
-
-    from_node = 0
-    to_node = n - 1
-    distances = d.find_distances(from_node)
-
-    return distances[to_node] if distances[to_node] != float('inf') else -1
-
+    
+def generate_graph(N):
+    nodes = list(range(1, N+1))
+    graph = Dijkstra(nodes)
+    
+    for a in range(1, N):
+        for b in range(a + 1, min(a + 10, N + 1)):
+            weight = random.randint(1, 1000)
+            graph.add_edge(a, b, weight)
+    
+    graph.shuffle_edges()
+    return graph
 
 if __name__ == "__main__":
-    print(calculate([1, 1, 1, 1]))  # 3
-    print(calculate([3, 2, 1]))      # -1
-    print(calculate([3, 5, 2, 2, 2, 3, 5]))  # 10
-    print(calculate([7, 5, 3, 1, 4, 2, 4, 6, 1]))  # 32
+    N = 5000
+    
+    graph = generate_graph(N)
+    start_time = time.time()
+    distances = graph.find_distances(1)
+    end_time = time.time()
+    
+    t = end_time - start_time
+    print(f"Aika: {t:.6f}")

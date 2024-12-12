@@ -1,4 +1,38 @@
-import heapq
+"""
+CSES-3182 Junien hinnat
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko14
+
+Anna Sokolova • December 2024
+"""
+
+
+class FloydWarshall:
+    def __init__(self, nodes):
+        self.nodes = nodes
+        self.graph = {}
+        for a in self.nodes:
+            for b in self.nodes:
+                distance = 0 if a == b else float("inf")
+                self.graph[(a, b)] = distance
+
+    def add_edge(self, a, b, w):
+        self.graph[(a, b)] = min(self.graph[(a, b)], w)
+
+    def find_distances(self):
+        distances = self.graph.copy()
+
+        for k in self.nodes:
+            for a in self.nodes:
+                for b in self.nodes:
+                    distance = min(distances[(a, b)],
+                                   distances[(a, k)] +
+                                   distances[(k, b)])
+                    distances[(a, b)] = distance
+
+        return distances
+
 
 class TrainPrices:
     def __init__(self):
@@ -11,48 +45,33 @@ class TrainPrices:
         self.cities[city1].append((city2, price))
         self.cities[city2].append((city1, price))
 
-    def find_prices_by_city(self, start):
+    def find_distances(self):
+        # refactored to use Floyd-Warshall algorithm
         prices = {}
-        for city in self.cities:
-            prices[city] = float("inf")
-        prices[start] = 0
+        f = FloydWarshall(sorted(list(self.cities.keys())))
 
-        queue = []
-        heapq.heappush(queue, (0, start))
+        for city1, connections in self.cities.items():
+            for city2, price in connections:
+                f.add_edge(city1, city2, price)
 
-        visited = set()
-        while queue:
-            a = heapq.heappop(queue)[1]
-            if a in visited:
-                continue
-            visited.add(a)
-
-            for b, price in self.cities[a]:
-                new_price = prices[a] + price
-                if new_price < prices[b]:
-                    prices[b] = new_price
-                    new_pair = (new_price, b)
-                    heapq.heappush(queue, new_pair)
+        prices = f.find_distances()
 
         return prices
 
-
     def find_prices(self):
-        prices = {}
-        for city in self.cities:
-            prices[city] = self.find_prices_by_city(city)
+        prices = self.find_distances()
 
-        table = [[None] + sorted(self.cities)]
+        table = [[None] + sorted(list(self.cities.keys()))]
         for city in sorted(self.cities):
             row = [city]
-            for dest in sorted(self.cities):
-                price = prices[city][dest]
+            for dest in sorted(list(self.cities.keys())):
+                price = prices.get((city, dest), float("inf"))
                 if price == float("inf"):
                     row.append(-1)
                 else:
                     row.append(price)
             table.append(row)
-            
+
         return table
 
 
