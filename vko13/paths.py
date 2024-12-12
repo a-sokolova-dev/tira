@@ -1,12 +1,19 @@
-def create(x):
-    points = []
+"""
+CSES-3188 Polut
 
-    i = 1
-    while x > 0:
-        if x % 2:
-            points.append(i * 2)
-        i += 1
-        x //= 2
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko13
+
+Anna Sokolova • December 2024
+"""
+
+
+def create(x):
+    points = [
+        2 * index
+        for index in range(1, x.bit_length() + 1)
+        if x & (1 << (index - 1))
+    ]
 
     edges = [(1, 2)]
 
@@ -21,9 +28,9 @@ def create(x):
 
     return edges
 
+
 if __name__ == "__main__":
-    print(create(2)) # esim. [(1,2), (1,100), (2,100)]
+    print(create(2))  # esim. [(1,2), (1,100), (2,100)]
     print(create(5))
     print(create(10))
     print(create(123456789))
-    
