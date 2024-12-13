@@ -1,49 +1,72 @@
-import itertools
+"""
+CSES-3201 Kaikki puut
 
-class UnionFind:
-    def __init__(self, nodes):
-        self.link = {node: None for node in nodes}
-        self.size = {node: 1 for node in nodes}
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko15
 
-    def find(self, x):
-        while self.link[x]:
-            x = self.link[x]
-        return x
+Anna Sokolova • December 2024
+"""
 
-    def union(self, a, b):
-        a = self.find(a)
-        b = self.find(b)
-        if a == b: return
 
-        if self.size[a] > self.size[b]:
-            a, b = b, a
-        self.link[a] = b
-        self.size[b] += self.size[a]
-        
+from itertools import combinations
+
+
 class AllTrees:
     def __init__(self, n):
-        self.n = n
+        self.nodes = n
         self.edges = []
+        self.current_edges = []
+        self.visited = set()
 
     def add_edge(self, a, b):
         self.edges.append((a, b))
 
-    def is_tree(self, choice):
-        uf = UnionFind(range(1, self.n + 1))
+    def _is_connected(self, a, b):
+        if (a, b) in self.visited:
+            return False
 
-        for a, b in choice:
-            if uf.find(a) == uf.find(b):
-                return False
-            uf.union(a, b)
+        if a == b:
+            return True
+
+        self.visited.add((a, b))
+
+        for edge in self.current_edges:
+            if edge[0] == a:
+                if self._is_connected(edge[1], b):
+                    return True
+
+            if edge[1] == a:
+                if self._is_connected(edge[0], b):
+                    return True
+
+        return False
+
+    def _is_spanning(self, edges):
+        # TODO: could be refactored to use UF
+        self.current_edges = edges
+        for n in range(1, self.nodes+1):
+            for m in range(1, self.nodes+1):
+                self.visited = set()
+                connected = self._is_connected(n, m)
+                if not connected:
+                    return False
 
         return True
 
     def count(self):
-        result = 0
-        choices = itertools.combinations(self.edges, self.n - 1)
+        res = 0
+        for comb in combinations(self.edges, self.nodes-1):
+            if self._is_spanning(comb):
+                res += 1
 
-        for choice in choices:
-            if self.is_tree(choice):
-                result += 1
+        return res
 
-        return result
+
+if __name__ == "__main__":
+    a = AllTrees(3)
+    a.add_edge(1, 2)
+    print(a.count())  # 0
+    a.add_edge(1, 3)
+    print(a.count())  # 1
+    a.add_edge(2, 3)
+    print(a.count())  # 3

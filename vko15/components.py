@@ -1,3 +1,13 @@
+"""
+CSES-3196 Komponentit
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko15
+
+Anna Sokolova • December 2024
+"""
+
+
 class UnionFind:
     def __init__(self, nodes):
         self.link = {node: None for node in nodes}
@@ -11,12 +21,14 @@ class UnionFind:
     def union(self, a, b):
         a = self.find(a)
         b = self.find(b)
-        if a == b: return
+        if a == b:
+            return
 
         if self.size[a] > self.size[b]:
             a, b = b, a
         self.link[a] = b
         self.size[b] += self.size[a]
+
 
 class Components:
     def __init__(self, n):
@@ -33,13 +45,14 @@ class Components:
 
         return len(s)
 
+
 if __name__ == "__main__":
     c = Components(5)
-    print(c.count()) # 5
+    print(c.count())  # 5
     c.add_road(1, 2)
     c.add_road(1, 3)
-    print(c.count()) # 3
+    print(c.count())  # 3
     c.add_road(2, 3)
-    print(c.count()) # 3
+    print(c.count())  # 3
     c.add_road(4, 5)
-    print(c.count()) # 2
+    print(c.count())  # 2

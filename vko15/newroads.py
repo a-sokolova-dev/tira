@@ -1,3 +1,13 @@
+"""
+CSES-3197 Uudet tiet
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko15
+
+Anna Sokolova • December 2024
+"""
+
+
 class UnionFind:
     def __init__(self, nodes):
         self.link = {node: None for node in nodes}

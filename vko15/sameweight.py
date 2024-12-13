@@ -1,3 +1,13 @@
+"""
+CSES-3199 Samat painot
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko15
+
+Anna Sokolova • December 2024
+"""
+
+
 class UnionFind:
     def __init__(self, nodes):
         self.link = {node: None for node in nodes}
@@ -11,12 +21,14 @@ class UnionFind:
     def union(self, a, b):
         a = self.find(a)
         b = self.find(b)
-        if a == b: return
+        if a == b:
+            return
 
         if self.size[a] > self.size[b]:
             a, b = b, a
         self.link[a] = b
         self.size[b] += self.size[a]
+
 
 class Kruskal:
     def __init__(self, nodes):
@@ -61,14 +73,15 @@ class SameWeight:
             return True
         return pos == -neg
 
+
 if __name__ == "__main__":
     s = SameWeight(4)
     s.add_edge(1, 2, 2)
     s.add_edge(1, 3, 3)
-    print(s.check()) # True
+    print(s.check())  # True
     s.add_edge(1, 4, 3)
-    print(s.check()) # True
+    print(s.check())  # True
     s.add_edge(3, 4, 3)
-    print(s.check()) # True
+    print(s.check())  # True
     s.add_edge(2, 4, 1)
-    print(s.check()) # False
+    print(s.check())  # False
