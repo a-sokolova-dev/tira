@@ -1,3 +1,13 @@
+"""
+CSES-3206 Planeetat
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko16
+
+Anna Sokolova • December 2024
+"""
+
+
 class MaximumFlow:
     def __init__(self, nodes):
         self.nodes = nodes
@@ -36,24 +46,25 @@ class MaximumFlow:
             total += add
         return total
 
+
 class Planets:
     def __init__(self, n):
         self.n = n
         self.mf = MaximumFlow(range(1, n+1))
 
     def add_teleport(self, a, b):
-        if a > b:
-            a, b = b, a
+        # refactored to remove excessive condition check
         self.mf.add_edge(a, b, 1)
 
     def calculate(self):
         return self.mf.construct(1, self.n)
 
+
 if __name__ == "__main__":
     p = Planets(5)
-    print(p.calculate()) # 0
+    print(p.calculate())  # 0
     p.add_teleport(1, 2)
     p.add_teleport(2, 5)
-    print(p.calculate()) # 1
+    print(p.calculate())  # 1
     p.add_teleport(1, 5)
-    print(p.calculate()) # 2
+    print(p.calculate())  # 2

@@ -1,3 +1,13 @@
+"""
+CSES-3208 Ratsuparit
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko16
+
+Anna Sokolova • December 2024
+"""
+
+
 class MaximumFlow:
     def __init__(self, nodes):
         self.nodes = nodes
@@ -36,23 +46,36 @@ class MaximumFlow:
             total += add
         return total
 
+
 def count(r):
-    positions = [(x, y) for x in range(8) for y in range(8)]
+    positions = [(x, y) for x in range(len(r)) for y in range(len(r[0]))]
     mf = MaximumFlow(positions + ["start", "end"])
 
-    for x, y in positions:
+    knights = [(x, y) for x in range(len(r))
+               for y in range(len(r[0])) if r[x][y] == "*"]
+
+    for x, y in knights:
         if (x + y) % 2 == 0:
             mf.add_edge("start", (x, y), 1)
         else:
             mf.add_edge((x, y), "end", 1)
 
-    for x1, y1 in positions:
-        if (x1 + y1) % 2 == 0 and r[y1][x1] == "*":
-            for x2, y2 in positions:
-                if abs(x1 - x2) * abs(y1 - y2) == 2 and r[y2][x2] == "*":
+    offsets = [
+        (-2, 1), (-2, -1), (2, 1), (2, -1),
+        (1, -2), (1, 2), (-1, 2), (-1, -2)
+    ]
+
+    for x1, y1 in knights:
+        if (x1 + y1) % 2 == 0:
+            for dx, dy in offsets:
+                x2, y2 = x1 + dx, y1 + dy
+
+                if (0 <= x2 < len(r) and 0 <= y2 < len(r[0]) and
+                        r[x2][y2] == "*" and (x2, y2) in knights):
                     mf.add_edge((x1, y1), (x2, y2), 1)
 
     return mf.construct("start", "end")
+
 
 if __name__ == "__main__":
     r = ["*.......",
@@ -63,7 +86,7 @@ if __name__ == "__main__":
          ".......*",
          "........",
          "......*."]
-    print(count(r)) # 3
+    print(count(r))  # 3
 
     r = ["***.*...",
          ".*...***",
@@ -73,4 +96,4 @@ if __name__ == "__main__":
          ".***.**.",
          "...*...*",
          "**..*.**"]
-    print(count(r)) # 10
+    print(count(r))  # 10

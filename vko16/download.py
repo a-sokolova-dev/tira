@@ -1,3 +1,13 @@
+"""
+CSES-3205 Tiedonvälitys
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko16
+
+Anna Sokolova • December 2024
+"""
+
+
 class MaximumFlow:
     def __init__(self, nodes):
         self.nodes = nodes
@@ -24,7 +34,7 @@ class MaximumFlow:
                     self.flow[(next_node, node)] += inc
                     return inc
         return 0
-    
+
     def construct(self, source, sink):
         self.flow = self.graph.copy()
         total = 0
@@ -35,24 +45,26 @@ class MaximumFlow:
                 break
             total += add
         return total
-    
+
+
 class Download:
     def __init__(self, n):
         self.mf = MaximumFlow(range(1, n + 1))
- 
+
     def add_link(self, a, b, x):
         self.mf.add_edge(a, b, x)
- 
+
     def calculate(self, a, b):
         return self.mf.construct(a, b)
 
+
 if __name__ == "__main__":
     d = Download(4)
-    print(d.calculate(1, 4)) # 0
+    print(d.calculate(1, 4))  # 0
     d.add_link(1, 2, 5)
     d.add_link(2, 4, 6)
     d.add_link(1, 4, 2)
-    print(d.calculate(1, 4)) # 7
+    print(d.calculate(1, 4))  # 7
     d.add_link(1, 3, 4)
     d.add_link(3, 2, 2)
-    print(d.calculate(1, 4)) # 8
+    print(d.calculate(1, 4))  # 8

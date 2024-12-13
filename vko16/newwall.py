@@ -1,3 +1,13 @@
+"""
+CSES-3209 Uudet seinät
+
+Please see my GitHub repository for used theory references and writeups:
+https://github.com/a-sokolova-dev/tira/tree/main/vko16
+
+Anna Sokolova • December 2024
+"""
+
+
 class MaximumFlow:
     def __init__(self, nodes):
         self.nodes = nodes
@@ -36,24 +46,29 @@ class MaximumFlow:
             total += add
         return total
 
+
 def count(r):
-    n = len(r)
-    nodes = [(y, x, k) for y in range(n) for x in range(n) for k in [0, 1]]
+    # had too much fun trying to refactor this, so
+    # that's why the multiple re-submissions. sorry.
+    size = len(r) * len(r) * 2
+    mf = MaximumFlow(range(0, size))
 
-    mf = MaximumFlow(nodes)
+    for x in range(len(r)):
+         for y in range(len(r)):
+            if r[x][y] == "#":
+                continue
 
-    for y in range(n):
-        for x in range(n):
-            if r[y][x] == ".":
-                mf.add_edge((y, x, 0), (y, x, 1), 1)
+            node_base = (x * len(r) + y) * 2
+            mf.add_edge(node_base, node_base + 1, 1)
 
-            if y + 1 < n:
-                mf.add_edge((y, x, 1), (y + 1, x, 0), 1)
+            if x < len(r) - 1:
+                mf.add_edge(node_base + 1, ((x + 1) * len(r) + y) * 2, 1)
 
-            if x + 1 < n:
-                mf.add_edge((y, x, 1), (y, x + 1, 0), 1)
+            if y < len(r) - 1:
+                mf.add_edge(node_base + 1, (x * len(r) + (y + 1)) * 2, 1)
 
-    return mf.construct((0, 0, 1), (n - 1, n - 1, 0))
+    return mf.construct(1, size - 2)
+
 
 if __name__ == "__main__":
     r = [".....",
@@ -61,11 +76,11 @@ if __name__ == "__main__":
          "...#.",
          "##.#.",
          "....."]
-    print(count(r)) # 2
+    print(count(r))  # 2
 
     r = [".....",
          ".....",
          "..#.#",
          ".....",
          "..#.."]
-    print(count(r)) # 1
+    print(count(r))  # 1

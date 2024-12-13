@@ -1,13 +1,3 @@
-"""
-CSES-3207 Tanssiaiset
-
-Please see my GitHub repository for used theory references and writeups:
-https://github.com/a-sokolova-dev/tira/tree/main/vko16
-
-Anna Sokolova • December 2024
-"""
-
-
 class MaximumFlow:
     def __init__(self, nodes):
         self.nodes = nodes
@@ -45,33 +35,27 @@ class MaximumFlow:
                 break
             total += add
         return total
+    
+print("a")
+
+m = MaximumFlow([1, 2, 3, 4, 5, 6, 7])
+
+m.add_edge(1, 2, 7)
+m.add_edge(1, 5, 15)
+
+m.add_edge(2, 3, 3)
+m.add_edge(2, 4, 2)
+
+m.add_edge(3, 7, 8)
+
+m.add_edge(4, 3, 4)
+m.add_edge(4, 7, 3)
+
+m.add_edge(5, 4, 3)
+m.add_edge(5, 6, 9)
+
+m.add_edge(6, 4, 5) 
+m.add_edge(6, 7, 5) 
 
 
-class Ball:
-    def __init__(self, n):
-        self.n = n
-        self.source_node = 2*n+1
-        self.sink_node = 2*n+2
-        self.mf = MaximumFlow(range(1, 2*n+3))
-
-        for i in range(1, n+1):
-            self.mf.add_edge(self.source_node, i, 1)
-
-        for i in range(1, n+1):
-            self.mf.add_edge(i+n, self.sink_node, 1)
-
-    def add_pair(self, a, b):
-        self.mf.add_edge(a, b+self.n, 1)
-
-    def calculate(self):
-        return self.mf.construct(self.source_node, self.sink_node)
-
-
-if __name__ == "__main__":
-    b = Ball(4)
-    print(b.calculate())  # 0
-    b.add_pair(1, 2)
-    print(b.calculate())  # 1
-    b.add_pair(1, 3)
-    b.add_pair(3, 2)
-    print(b.calculate())  # 2
+print(m.construct(1, 7))
