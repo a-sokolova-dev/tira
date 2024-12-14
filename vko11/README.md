@@ -26,4 +26,4 @@ Encountered this problem before on [Leetcode](https://leetcode.com/problems/find
 
 [CSES-3147](https://cses.fi/tira24s/task/3144)
 
-Remains yet to be solved!
+Used the general idea proposed by David Eisenstat [here](https://stackoverflow.com/questions/33219712/find-k-th-minimum-sum-of-every-possible-subset), modified for storing subsets and accounting for the empty set.
