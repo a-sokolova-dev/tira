@@ -25,6 +25,3 @@ This part's problems also follow the course material quite closly, so not a lot 
 ## [Kaikki puut](spanning.py)
 
 [CSES-3201](https://cses.fi/tira24s/task/3201)
-
-
-
