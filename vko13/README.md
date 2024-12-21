@@ -14,11 +14,11 @@ Not a lot to comment in this part, most of the tasks can be solved using course 
 
 [CSES-3185](https://cses.fi/tira24s/task/3185)
 
-## [Kaikki polut](allpaths.py)
+## [Verkkopeli](graphgame.py)
 
 [CSES-3187](https://cses.fi/tira24s/task/3187)
 
-## [Polut](allpaths.py)
+## [Polut](paths.py)
 
 [CSES-3188](https://cses.fi/tira24s/task/3188)
 
